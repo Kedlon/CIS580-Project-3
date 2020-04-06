@@ -29,7 +29,8 @@ namespace MonoGameWindowsStarter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            //graphics.PreferredBackBufferWidth = 1042;
+            //graphics.PreferredBackBufferHeight = 768;
             base.Initialize();
         }
 
@@ -43,7 +44,7 @@ namespace MonoGameWindowsStarter
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            var playerCar = Content.Load<Texture2D>("car1");
+            var playerCar = Content.Load<Texture2D>("PixelCar");
             player = new Player(playerCar);
 
             //Load backgound
@@ -57,12 +58,12 @@ namespace MonoGameWindowsStarter
             //load player
             var playerLayer = new ParallaxLayer(this);
             playerLayer.Sprites.Add(player);
-            playerLayer.DrawOrder = 2;
+            playerLayer.DrawOrder = 3;
             Components.Add(playerLayer);
 
             //load midground
             var midgroundTexture = Content.Load<Texture2D>("Midground");
-            var midgroundSprite = new StaticSprite(midgroundTexture, new Vector2(0, 3500));
+            var midgroundSprite = new StaticSprite(midgroundTexture);
             var midgroundLayer = new ParallaxLayer(this);
             midgroundLayer.Sprites.Add(midgroundSprite);
             midgroundLayer.DrawOrder = 1;
@@ -70,10 +71,10 @@ namespace MonoGameWindowsStarter
 
             //load foregound Textures
             var foregroundTextures = Content.Load<Texture2D>("Foreground");
-            var foregroundSprite = new StaticSprite(foregroundTextures, new Vector2(0, 3500));
+            var foregroundSprite = new StaticSprite(foregroundTextures);
             var foregroundLayer = new ParallaxLayer(this);
             foregroundLayer.Sprites.Add(foregroundSprite);
-            foregroundLayer.DrawOrder = 4;
+            foregroundLayer.DrawOrder = 2;
             Components.Add(foregroundLayer);
 
             //setup for player tracking

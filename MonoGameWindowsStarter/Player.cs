@@ -24,19 +24,14 @@ namespace MonoGameWindowsStarter
         {
             X = 0,
             Y = 0,
-            Width = 131,
-            Height = 54
+            Width = 210,
+            Height = 83
         };
 
         /// <summary>
         /// The origin of the helicopter sprite
         /// </summary>
         Vector2 origin = new Vector2(66, 1);
-
-        /// <summary>
-        /// The angle the helicopter should tilt
-        /// </summary>
-        float angle = 0;
 
         /// <summary>
         /// The player's position in the world
@@ -55,7 +50,7 @@ namespace MonoGameWindowsStarter
         public Player(Texture2D spritesheet)
         {
             this.spritesheet = spritesheet;
-            this.Position = new Vector2(200, 200);
+            this.Position = new Vector2(200, 400);
         }
 
         /// <summary>
@@ -94,9 +89,6 @@ namespace MonoGameWindowsStarter
                 direction.Y += 1;
             }
 
-            // Caclulate the tilt of the helicopter
-            angle = 0.5f * direction.X;
-
             // Move the helicopter
             Position += (float)gameTime.ElapsedGameTime.TotalSeconds * Speed * direction;
         }
@@ -108,7 +100,7 @@ namespace MonoGameWindowsStarter
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             // Render the helicopter, rotating about the rotors
-            spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, angle, origin, 1f, SpriteEffects.None, 0.7f);
+            spriteBatch.Draw(spritesheet, Position, sourceRect, Color.White, 0, origin, 1f, SpriteEffects.None, 0.7f);
         }
 
     }
