@@ -38,6 +38,8 @@ namespace MonoGameWindowsStarter
         /// </summary>
         public Vector2 Position { get; set; }
 
+        public BoundingRectangle Bounds => new BoundingRectangle(Position, sourceRect.Width - 100, sourceRect.Height - 100); 
+
         /// <summary>
         /// How fast the player moves
         /// </summary>

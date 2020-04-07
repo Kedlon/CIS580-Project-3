@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameWindowsStarter
 {
@@ -12,7 +16,16 @@ namespace MonoGameWindowsStarter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        SoundEffect playerHitSFX;
+
         Player player;
+
+        List<StaticSprite> hazards = new List<StaticSprite>();
+
+        Random random = new Random();
+
+        Stopwatch HitCooldown = new Stopwatch();
+
 
         public Game1()
         {
@@ -32,6 +45,7 @@ namespace MonoGameWindowsStarter
             //graphics.PreferredBackBufferWidth = 1042;
             //graphics.PreferredBackBufferHeight = 768;
             base.Initialize();
+            HitCooldown.Start();
         }
 
         /// <summary>
@@ -42,6 +56,9 @@ namespace MonoGameWindowsStarter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            //load sfx for player hit
+            playerHitSFX = Content.Load<SoundEffect>("Hit_Hurt");
 
             // TODO: use this.Content to load your game content here
             var playerCar = Content.Load<Texture2D>("PixelCar");
@@ -77,11 +94,32 @@ namespace MonoGameWindowsStarter
             foregroundLayer.DrawOrder = 2;
             Components.Add(foregroundLayer);
 
+            //load and set hazards
+            var hazardTexture = Content.Load<Texture2D>("Logs-Big");
+            for (int i = 0; i < 5; i++)
+            {
+                var hazardVector = new Vector2(
+                            MathHelper.Lerp(300, 2000, (float)random.NextDouble()), // X between 300 and 2000
+                            MathHelper.Lerp(300, 400, (float)random.NextDouble()) // Y between 300 and 400
+                            );
+                var sprite = new StaticSprite(hazardTexture, hazardVector);
+                sprite.bounds = new BoundingRectangle(hazardVector, 64, 64);
+                hazards.Add(sprite);
+            }
+            var hazardLayer = new ParallaxLayer(this);
+            foreach (var item in hazards)
+            {
+                hazardLayer.Sprites.Add(item);
+            }
+            hazardLayer.DrawOrder = 3;
+            Components.Add(hazardLayer);
+
             //setup for player tracking
             backgroundLayer.ScrollController = new PlayerTrackingScrollController(player, 0.1f);
             midgroundLayer.ScrollController = new PlayerTrackingScrollController(player, 0.4f);
             playerLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
             foregroundLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
+            hazardLayer.ScrollController = new PlayerTrackingScrollController(player, 1.0f);
         }
 
 
@@ -103,11 +141,21 @@ namespace MonoGameWindowsStarter
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            
             // TODO: Add your update logic here
             player.Update(gameTime);
-
+            foreach(StaticSprite hazard in hazards)
+            {
+                if (player.Bounds.CollidesWith(hazard.bounds) && HitCooldown.ElapsedMilliseconds > 2500)
+                {
+                    playerHitSFX.Play();
+                    HitCooldown.Reset();
+                    HitCooldown.Start();
+                }
+            }
+            
             base.Update(gameTime);
+            
         }
 
         /// <summary>
@@ -117,9 +165,7 @@ namespace MonoGameWindowsStarter
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-
+            
             base.Draw(gameTime);
         }
     }

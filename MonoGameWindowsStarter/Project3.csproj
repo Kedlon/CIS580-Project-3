@@ -46,6 +46,7 @@
     <Compile Include="BoundingRectangle.cs" />
     <Compile Include="Collisions.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Hazard.cs" />
     <Compile Include="IBoundable.cs" />
     <Compile Include="IScrollController.cs" />
     <Compile Include="ISprite.cs" />

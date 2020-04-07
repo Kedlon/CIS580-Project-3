@@ -18,6 +18,8 @@ namespace MonoGameWindowsStarter
         /// </summary>
         public Vector2 position = Vector2.Zero;
 
+        public BoundingRectangle bounds;
+
         /// <summary>
         /// The texture this sprite uses
         /// </summary>
